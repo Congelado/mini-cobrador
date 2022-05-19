@@ -1,4 +1,4 @@
-class Grupo:
+class Producto:
     def __init__(self, nombre, precio, cantidad, id):
         self.__nombre = nombre
         self.__precio = precio

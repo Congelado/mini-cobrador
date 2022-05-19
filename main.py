@@ -1,5 +1,7 @@
+import sys
 import re
-from Grupo import Grupo
+from Producto import Producto
+
 
 
 
@@ -25,7 +27,7 @@ while True:
     print("\n", menu)
     while True:
         inUser = input("Ingrese una opción del 1 al 6: ")
-        match = re.match(r'^[1-6]$', inUser)
+        match = re.match('^[1-6]$', inUser)
         if match:
             break
         print("Ingrese una opción incorrecta\n", menu)
@@ -36,16 +38,22 @@ while True:
             print("\nAgregar producto\n".center(82, "-"))
             
             nombre = input("Ingrese el nombre del producto: ").lower()
-            precio = int(input("Ingrese el precio del producto: "))
-            cantidad = int(input("Ingrese la cantidad del producto: "))
+            precio = input("Ingrese el precio del producto: ")
+            cantidad =  input("Ingrese la cantidad del producto: ")
             
-            for i in range(len(diccSuper.items())+1):
-                if i not in diccSuper.keys():
-                    identificador = i
-                    break
-                
-            diccSuper[identificador] = Grupo(nombre, precio, cantidad, identificador)
-            print("el ID del producto es: ", identificador)
+            matchPrecio =re.match('^[0-9]+$', precio)
+            matchCantidad = re.match('^[0-9]+$', cantidad)
+            
+            if matchPrecio and matchCantidad:
+                for i in range(len(diccSuper.items())+1):
+                    if i not in diccSuper.keys():
+                        identificador = i
+                        break
+                    
+                diccSuper[identificador] = Producto(nombre, int(precio), int(cantidad), identificador)
+                print("el ID del producto es: ", identificador)
+            else:
+                print("Ingrese un precio y cantidad correctos") 
             
         case(2):
             print("\nRemover producto\n".center(82, "-"))
@@ -54,16 +62,15 @@ while True:
             
             try:
                 removedor = int(input("Ingrese el id del producto: "))
+                
+                if removedor in sorted(list(diccSuper.keys())):
+                    diccSuper.pop(removedor)
+                    print("El producto con el id: ", removedor, " ha sido removido")
+                else:
+                    print("id invalido")
             except:
-                pass
-            
-            if removedor in sorted(list(diccSuper.keys())):
-                diccSuper.pop(removedor)
-                print("El producto con el id: ", removedor, " ha sido removido")
-            else:
-                print("id invalido")
-        
-            
+                print("Ingrese un id correcto")  
+                
         case(3):
             print("\nAñadir a la cuenta\n".center(84, "-"))
             
@@ -72,24 +79,42 @@ while True:
             try:
                 anadir = int(input("Ingrese el id del producto que quiera llevarse: "))
                 cantidad = int(input("Ingrese la cantidad del producto que quiera añadir: "))
+                if anadir in sorted(list(diccSuper.keys())) and cantidad > 0:
+                    if diccSuper[anadir].cantidad - cantidad >=0:
+                        diccSuper[anadir].cantidad -= cantidad
+                        if anadir in diccCuenta.keys():
+                            diccCuenta[anadir].cantidad += cantidad
+                        else:
+                            diccCuenta[anadir] = Producto(diccSuper[anadir].nombre, diccSuper[anadir].precio, cantidad, anadir)
+                    else:
+                        print("No hay suficiente cantidad")
+                else:
+                    print("id invalido o cantidad invalida")
             except:
-                pass
-            diccSuper[anadir].cantidad -= cantidad
-            diccCuenta[anadir] = Grupo(diccSuper[anadir].nombre, diccSuper[anadir].precio, cantidad, anadir)
-            
-            
+                print("Ingrese una cantidad y id correctos")
+                
+
         case(4):
             print("\nRetirar de la cuenta\n".center(86, "-"))
             
             menu_objeto(diccCuenta)
             try:
-                quitar = int(input("Ingrese el id del producto que quiera qujitar de la cuenta: "))
+                quitar = int(input("Ingrese el id del producto que quiera quitar de la cuenta: "))
                 cantidad = int(input("Ingrese la cantidad del producto que quieras quitar: "))
+                
+                if quitar in sorted(list(diccCuenta.keys())) and cantidad > 0:
+                    if diccCuenta[quitar].cantidad - cantidad >=0:
+                        diccCuenta[quitar].cantidad -= cantidad
+                        diccSuper[quitar].cantidad += cantidad
+                    else:
+                        print("No hay suficiente cantidad")
+                        
+                if diccCuenta[quitar].cantidad <=0:
+                    print("se a quitado este producto de la cuenta:",diccCuenta.pop(quitar))
+            
             except:
-                pass
-            diccCuenta[quitar].cantidad -= cantidad
-            if diccCuenta[quitar].cantidad == 0 or diccCuenta[quitar].cantidad < 0:
-                print("se a quitado este producto de la cuenta:",diccCuenta.pop(quitar))
+                print("Ingrese una cantidad y id correctos")
+                
                 
         case(5):
             print("\nCobrar\n".center(72, "-"))
@@ -104,4 +129,5 @@ while True:
             
         case(6):
             print("\nSalir\n".center(71, "-"))
-            break
+            print("Gracias por su compra")
+            sys.exit()
