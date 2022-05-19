@@ -11,7 +11,14 @@ def menu_objeto(dicc):
 
 
 
-diccSuper = {}
+diccSuper = {0:Producto("Jamon", 30, 50, 0),
+            1:Producto("Merengue", 60, 20, 1),
+            2:Producto("Jabon", 200, 10, 2),
+            3:Producto("Mesa", 500, 10, 3),
+            4:Producto("Silla", 100, 40, 4),
+            5:Producto("Gato de juguete", 60, 30, 5),
+            6:Producto("Leña", 90, 200, 6)
+            }
 diccCuenta = {}
 
 menu="""
