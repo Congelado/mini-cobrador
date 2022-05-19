@@ -33,8 +33,5 @@ class Producto:
         return 'nombre: {}\n precio: {}\n cantidad: {}\n id: {}'.format(self.nombre, self.precio, self.cantidad, self.id)
     
     def __repr__(self):
-        rep = f'Person({self.nombre} {self.precio} {self.cantidad} {self.id})'
+        rep = f'Producto({self.nombre} {self.precio} {self.cantidad} {self.id})'
         return rep
-    
-if __name__ == "__main__":
-    pass
